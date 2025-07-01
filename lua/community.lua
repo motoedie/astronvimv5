@@ -29,7 +29,7 @@ return {
   { import = "astrocommunity.motion.harpoon" },
   { import = "astrocommunity.motion.hop-nvim" },
   { import = "astrocommunity.motion.mini-move" },
-  { import = "astrocommunity.motion.mini-surround"},
+  { import = "astrocommunity.motion.mini-surround" },
   { import = "astrocommunity.pack.full-dadbod" },
   { import = "astrocommunity.pack.json" },
   { import = "astrocommunity.pack.markdown" },
