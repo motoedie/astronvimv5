@@ -1,23 +1,8 @@
-local function biome_lsp_or_prettier(bufnr)
-  local has_biome_lsp = vim.lsp.get_clients({
-    bufnr = bufnr,
-    name = "biome",
-  })[1]
-  if has_biome_lsp then return {} end
-  local has_prettier = vim.fs.find({
-    ".prettierrc",
-    ".prettierrc.json",
-    ".prettierrc.yml",
-    ".prettierrc.yaml",
-    ".prettierrc.json5",
-    ".prettierrc.js",
-    ".prettierrc.cjs",
-    ".prettierrc.toml",
-    "prettier.config.js",
-    "prettier.config.cjs",
-  }, { upward = true })[1]
-  if has_prettier then return { "prettier", "prettierd" } end
-  return { "biome" }
+local function find_local_biome(bufnr)
+  local bufname = vim.api.nvim_buf_get_name(bufnr)
+  local startdir = (bufname ~= "" and vim.fs.dirname(bufname)) or vim.loop.cwd()
+  local paths = vim.fs.find({ "node_modules/.bin/biome" }, { upward = true, path = startdir })
+  return paths[1]
 end
 
 return {
@@ -40,10 +25,7 @@ return {
               local range = nil
               if args.count ~= -1 then
                 local end_line = vim.api.nvim_buf_get_lines(0, args.line2 - 1, args.line2, true)[1]
-                range = {
-                  start = { args.line1, 0 },
-                  ["end"] = { args.line2, end_line:len() },
-                }
+                range = { start = { args.line1, 0 }, ["end"] = { args.line2, end_line:len() } }
               end
               require("conform").format { async = true, lsp_format = "fallback", range = range }
             end,
@@ -83,6 +65,7 @@ return {
       },
     },
   },
+
   opts = {
     format_on_save = function(bufnr)
       if vim.g.autoformat == nil then vim.g.autoformat = true end
@@ -91,15 +74,27 @@ return {
       if autoformat then return { timeout_ms = 5000, lsp_format = "fallback" } end
     end,
 
+    -- Define a formatter that runs `biome check` from your local node_modules.
+    formatters = {
+      biome_check = function(bufnr)
+        local cmd = find_local_biome(bufnr) or "biome"
+        return {
+          command = cmd,
+          args = { "check", "--fix", "--stdin-file-path", vim.api.nvim_buf_get_name(bufnr) },
+          stdin = true,
+        }
+      end,
+    },
+
     formatters_by_ft = {
-      typescript = biome_lsp_or_prettier,
-      javascript = biome_lsp_or_prettier,
-      javascriptreact = biome_lsp_or_prettier,
-      typescriptreact = biome_lsp_or_prettier,
-      json = { "biome" },
-      jsonc = { "biome" },
-      markdown = { "biome" },
-      toml = { "biome" },
+      typescript = { "biome_check" },
+      javascript = { "biome_check" },
+      typescriptreact = { "biome_check" },
+      javascriptreact = { "biome_check" },
+      json = { "biome_check" },
+      jsonc = { "biome_check" },
+      markdown = { "biome_check" },
+      toml = { "biome_check" },
     },
   },
 }
