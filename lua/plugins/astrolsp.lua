@@ -39,7 +39,7 @@ return {
     -- enable servers that you already have installed without mason
     servers = {
       -- "pyright"
-      "biome"
+      "biome",
     },
     -- customize language server configuration options passed to `lspconfig`
     ---@diagnostic disable: missing-fields
@@ -92,6 +92,10 @@ return {
           cond = function(client)
             return client.supports_method "textDocument/semanticTokens/full" and vim.lsp.semantic_tokens ~= nil
           end,
+        },
+        ["<Leader>Pt"] = {
+          function() vim.cmd "CopilotCreateTest" end,
+          desc = "Generate test file via Copilot",
         },
       },
     },
