@@ -100,9 +100,10 @@ return {
     'tpope/vim-fugitive',
     lazy = false,
   },
+  -- Override AstroNvim's `^2.2` pin: aerial 2.x uses iter_matches({all = false}),
+  -- removed in Neovim 0.11+. v3.x drops the deprecated call.
   {
-    'AckslD/muren.nvim',
-    config = true,
-    lazy = false,
-  }
+    "stevearc/aerial.nvim",
+    version = "^3.0",
+  },
 }
