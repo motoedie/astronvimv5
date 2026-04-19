@@ -81,10 +81,6 @@ return {
 
         -- setting a mapping to false will disable it
         -- ["<C-S>"] = false,
-        ["<leader>gf"] = {
-          function() require("telescope.builtin").git_bcommits() end,
-          desc = "Git file history",
-        },
         ["<leader>lt"] = { "<cmd>lua vim.lsp.buf.hover()<cr>", desc = "Type diagnostics" },
       },
       i = {
