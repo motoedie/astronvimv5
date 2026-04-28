@@ -1,3 +1,14 @@
+-- Silence `client.stop is deprecated` noise from nvim-lspconfig v2.1 (still
+-- calls `client.stop()` instead of `client:stop()`). AstroNvim pins lspconfig
+-- to `~2.1`, so upstream fix isn't reachable until the pin is lifted.
+do
+  local orig_deprecate = vim.deprecate
+  vim.deprecate = function(name, ...)
+    if name == "client.stop" then return end
+    return orig_deprecate(name, ...)
+  end
+end
+
 -- :CopilotCreateTest — generate Vitest/RTL tests into <file>.test.ts[x]
 vim.api.nvim_create_user_command("CopilotCreateTest", function()
   -- lazy-load CopilotChat if needed
