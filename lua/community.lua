@@ -15,7 +15,7 @@ return {
   { import = "astrocommunity.diagnostics.trouble-nvim" },
   { import = "astrocommunity.editing-support.hypersonic-nvim" },
   { import = "astrocommunity.editing-support.rainbow-delimiters-nvim" },
-  { import = "astrocommunity.editing-support.refactoring-nvim" },
+  -- { import = "astrocommunity.editing-support.refactoring-nvim" },
   { import = "astrocommunity.editing-support.treesj" },
   { import = "astrocommunity.editing-support.wildfire-nvim" },
   { import = "astrocommunity.file-explorer.oil-nvim" },
