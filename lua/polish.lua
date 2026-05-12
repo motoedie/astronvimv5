@@ -1,13 +1,14 @@
--- Silence `client.stop is deprecated` noise from nvim-lspconfig v2.1 (still
--- calls `client.stop()` instead of `client:stop()`). AstroNvim pins lspconfig
--- to `~2.1`, so upstream fix isn't reachable until the pin is lifted.
-do
-  local orig_deprecate = vim.deprecate
-  vim.deprecate = function(name, ...)
-    if name == "client.stop" then return end
-    return orig_deprecate(name, ...)
-  end
-end
+-- Silence all `vim.deprecate` notices. They blow up the cmdline into a
+-- half-screen "Press ENTER" panel and are useless until upstream plugins
+-- catch up. Run `:checkhealth vim.deprecated` if you want the list.
+vim.deprecate = function() end
+
+-- Guardrail: resession persists `cmdheight` per session, and a one-time
+-- inflation by a "Press ENTER" prompt gets baked in forever. Also gets
+-- re-inflated on terminal resize. Force it back to 0.
+vim.api.nvim_create_autocmd({ "VimEnter", "VimResized" }, {
+  callback = function() vim.o.cmdheight = 0 end,
+})
 
 -- :CopilotCreateTest — generate Vitest/RTL tests into <file>.test.ts[x]
 vim.api.nvim_create_user_command("CopilotCreateTest", function()
