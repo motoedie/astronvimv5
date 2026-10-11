@@ -1,29 +1,8 @@
--- Customize None-ls sources
+-- Biome formatting lives in conform.nvim (typescript.lua). Biome LSP is via mason/astrolsp for lint.
+-- No null-ls sources — avoids a third biome formatter fighting conform.
 
 ---@type LazySpec
 return {
   "nvimtools/none-ls.nvim",
-  opts = function(_, opts)
-    -- opts variable is the default configuration table for the setup function call
-    local null_ls = require "null-ls"
-
-    -- Check supported formatters and linters
-    -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins/formatting
-    -- https://github.com/nvimtools/none-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
-    opts.sources = {
-      -- Set a formatter
-      -- null_ls.builtins.formatting.stylua,
-      -- null_ls.builtins.formatting.prettier,
-      null_ls.builtins.formatting.biome,
-    }
-
-    -- Only insert new sources, do not replace the existing ones
-    -- (If you wish to replace, use `opts.sources = {}` instead of the `list_insert_unique` function)
-    opts.sources = require("astrocore").list_insert_unique(opts.sources, {
-      -- Set a formatter
-      -- null_ls.builtins.formatting.stylua,
-      -- null_ls.builtins.formatting.prettier,
-    })
-    return opts -- return final config table
-  end,
+  opts = { sources = {} },
 }
